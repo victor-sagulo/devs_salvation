@@ -10,4 +10,4 @@ class Post(models.Model):
     usefull_post = models.IntegerField(default=0)
     user = models.ForeignKey(
         "accounts.User", on_delete=models.CASCADE, related_name="posts")
-    tag = models.ManyToManyField("tags.Tag", related_name="posts")
+    tags = models.ManyToManyField("tags.Tag", related_name="posts")
