@@ -75,3 +75,13 @@ class UserPostsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = "__all__"
+
+
+class GetPostInfoSerializer(serializers.ModelSerializer):
+    user = AccountsSerializer()
+    answers = AnswersSerializer(many=True)
+    tags = TagSerializer(many=True)
+
+    class Meta:
+        model = Post
+        fields = "__all__"
