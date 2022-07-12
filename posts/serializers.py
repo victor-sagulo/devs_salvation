@@ -2,10 +2,11 @@ from rest_framework import serializers
 from posts.models import Post
 from tags.models import Tag
 from tags.serializers import TagSerializer
+from accounts.serializers import AccountsSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
-
+    user = AccountsSerializer()
     tags_count = serializers.SerializerMethodField()
     tags = TagSerializer(many=True)
 
@@ -36,3 +37,31 @@ class PostSerializer(serializers.ModelSerializer):
         post.tags.set(tags)
 
         return post
+
+    def update(self, instance, validated_data):
+
+        tags_to_update = validated_data.pop('tags', None)
+
+        for tag in tags_to_update:
+            existing_tag = Tag.objects.filter(name=tag['name']).first()
+
+            if existing_tag:
+                instance.tags.add(existing_tag)
+            else:
+                new_tag = Tag.objects.create(**tag)
+                instance.tags.add(new_tag)
+
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+
+        instance.save()
+        return instance
+
+
+class UsefullPostVote(serializers.ModelSerializer):
+
+    def update(self, instance, validated_data):
+        instance.usefull_post += 1
+
+        instance.save()
+        return instance
