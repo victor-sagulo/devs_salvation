@@ -1,3 +1,4 @@
+from msilib.schema import SelfReg
 from rest_framework import serializers
 from answers.models import Answer
 from posts.serializers import PostSerializer
@@ -33,3 +34,20 @@ class DeslikeAnswerVote(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class UserAnswerSerializer(serializers.ModelSerializer):
+    post = PostSerializer()
+
+    class Meta:
+        model = Answer
+        fields = [
+            "id",
+            "created_at",
+            "updated_at",
+            "content",
+            "likes",
+            "deslikes",
+            "post",
+        ]
+        read_only_fields = ["id", "post"]
