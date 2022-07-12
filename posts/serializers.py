@@ -41,7 +41,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
 
-        tags_to_update = validated_data.pop('tags', None)
+        tags_to_update = validated_data.pop('tags', [])
 
         for tag in tags_to_update:
             existing_tag = Tag.objects.filter(name=tag['name']).first()

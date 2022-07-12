@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from accounts.models import User
-from posts.serializers import PostSerializer
+from posts.serializers import UserPostsSerializer
 from answers.serializers import UserAnswerSerializer
 
 
@@ -29,7 +29,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class GetAccountProfileSerializer(serializers.ModelSerializer):
-    posts = PostSerializer(many=True)
+    posts = UserPostsSerializer(many=True)
     answers = UserAnswerSerializer(many=True)
 
     class Meta:

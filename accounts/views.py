@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import generics
 from utils.mixins import SerilizerByMethodMixin
 from rest_framework.views import APIView, Response, status
