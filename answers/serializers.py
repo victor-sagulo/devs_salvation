@@ -7,12 +7,12 @@ from accounts.serializers import AccountsSerializer
 
 class AnswersSerializer(serializers.ModelSerializer):
     user = AccountsSerializer()
-    post = PostSerializer()
 
     class Meta:
         model = Answer
-        fields = "__all__"
-        read_only_fields = ["id", "user", "post"]
+        fields = ["id", "created_at", "updated_at",
+                  "content", "likes", "deslikes", "user", "post_id"]
+        read_only_fields = ["id", "user", "post_id"]
 
     def create(self, validated_data):
 
