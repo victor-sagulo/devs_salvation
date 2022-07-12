@@ -13,7 +13,7 @@ class AccountsSerializer(serializers.ModelSerializer):
         user_email = User.objects.filter(email__ixact=value).exists()
 
         if user_email:
-            raise serializers.ValidationError("email already exists")
+            raise serializers.ValidationError("This email already exists")
 
     def create(self, validated_data):
         account = User.objects.create_user(**validated_data)
