@@ -8,5 +8,6 @@ class User(AbstractUser):
     username = models.CharField(max_length=125, unique=True)
     first_name = models.CharField(max_length=125)
     last_name = models.CharField(max_length=125)
-    REQUIRED_FIELDS = ["email", "first_name", "last_name"]
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ["first_name", "last_name"]
     objects = CustomUserManager()
