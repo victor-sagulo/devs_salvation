@@ -58,7 +58,7 @@ class PostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UsefullPostVote(serializers.ModelSerializer):
+class UsefullPostVoteSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.usefull_post += 1
