@@ -1,0 +1,35 @@
+from rest_framework import serializers
+from answers.models import Answer
+from posts.serializers import PostSerializer
+from accounts.serializers import AccountsSerializer
+
+
+class AnswersSerializer(serializers.ModelSerializer):
+    user = AccountsSerializer()
+    post = PostSerializer()
+
+    class Meta:
+        model = Answer
+        fields = "__all__"
+        read_only_fields = ["id", "user", "post"]
+
+    def create(self, validated_data):
+
+        answers = Answer.objects.create(**validated_data)
+        return answers
+
+
+class LikeAnswerVote(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        instance.likes += 1
+
+        instance.save()
+        return instance
+
+
+class DeslikeAnswerVote(serializers.ModelSerializer):
+    def update(self, instance, validated_dataa):
+        instance.deslike += 1
+
+        instance.save()
+        return instance
