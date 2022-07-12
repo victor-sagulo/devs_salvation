@@ -3,6 +3,7 @@ from posts.models import Post
 from tags.models import Tag
 from tags.serializers import TagSerializer
 from accounts.serializers import AccountsSerializer
+from answers.serializers import AnswersSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -65,3 +66,12 @@ class UsefullPostVoteSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class UserPostsSerializer(serializers.ModelSerializer):
+    answers = AnswersSerializer(many=True)
+    tags = TagSerializer(many=True)
+
+    class Meta:
+        model = Post
+        fields = "__all__"
