@@ -3,11 +3,15 @@ from utils.mixins import SerilizerByMethodMixin
 from rest_framework.views import APIView, Response, status
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import authenticate
+from accounts.permissions import UserProfileManageAuthentication, UsersListManageAuthentication
 from accounts.serializers import GetAccountProfileSerializer, LoginSerializer, AccountsSerializer
 from accounts.models import User
 
 
 class ListCreateUserView(generics.ListCreateAPIView):
+
+    permission_classes = [UsersListManageAuthentication]
+
     queryset = User.objects.all()
     serializer_class = AccountsSerializer
 
@@ -34,6 +38,8 @@ class LoginView(APIView):
 
 
 class RetrieveUpdateDestroyView(SerilizerByMethodMixin, generics.RetrieveUpdateDestroyAPIView):
+
+    permission_classes = [UserProfileManageAuthentication]
 
     queryset = User.objects.all()
     serializer_map = {

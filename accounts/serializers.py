@@ -30,13 +30,17 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserPostsSerializer(serializers.ModelSerializer):
-    # answers = answers_serializers.AnswersSerializer(many=True)
+    answers_count = serializers.SerializerMethodField()
     # tags = TagSerializer(many=True)
 
     class Meta:
         model = Post
-        fields = "__all__"
+        fields = ["id", "content", "tags", "answers_count", "usefull_post",
+                  "created_at", "updated_at"]
         depth = 1
+
+    def get_answers_count(self, post: Post):
+        return len(post.answers.all())
 
 
 class GetAccountProfileSerializer(serializers.ModelSerializer):
