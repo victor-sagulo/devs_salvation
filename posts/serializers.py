@@ -7,16 +7,13 @@ import answers.serializers as answers_serializers
 
 
 class PostSerializer(serializers.ModelSerializer):
-    user = accounts_serializers.AccountsSerializer()
+    user = accounts_serializers.AccountsSerializer(read_only=True)
     tags_count = serializers.SerializerMethodField()
     tags = TagSerializer(many=True)
 
     class Meta:
         model = Post
         fields = "__all__"
-        extra_kwargs = {
-            "user": {"read_only": True}
-        }
 
     def get_tags_count(self, post: Post):
         return len(post.tags.all())
@@ -60,6 +57,12 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class UsefullPostVoteSerializer(serializers.ModelSerializer):
+    user = accounts_serializers.AccountsSerializer()
+
+    class Meta:
+        model = Post
+        fields = "__all__"
+        depth = 1
 
     def update(self, instance, validated_data):
         instance.usefull_post += 1
@@ -70,15 +73,6 @@ class UsefullPostVoteSerializer(serializers.ModelSerializer):
 
 class GetPostInfoSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer()
-    answers = answers_serializers.AnswersSerializer(many=True)
-    tags = TagSerializer(many=True)
-
-    class Meta:
-        model = Post
-        fields = "__all__"
-
-
-class UserPostsSerializer(serializers.ModelSerializer):
     answers = answers_serializers.AnswersSerializer(many=True)
     tags = TagSerializer(many=True)
 

@@ -1,13 +1,15 @@
 from rest_framework import serializers
 from accounts.models import User
-import posts.serializers as posts_serializers
+from posts.models import Post
+# from posts.serializers import UserPostsSerializer
 import answers.serializers as answer_serializer
 
 
 class AccountsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ["id", "username", "email",
+                  "first_name", "last_name", "password"]
         read_only_fields = ["id"]
         extra_kwargs = {"password": {"write_only": True}}
 
@@ -22,16 +24,26 @@ class AccountsSerializer(serializers.ModelSerializer):
         return account
 
 
-class LoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+
+class UserPostsSerializer(serializers.ModelSerializer):
+    # answers = answers_serializers.AnswersSerializer(many=True)
+    # tags = TagSerializer(many=True)
+
     class Meta:
-        model = User
-        fields = ["email", "password"]
+        model = Post
+        fields = "__all__"
+        depth = 1
 
 
 class GetAccountProfileSerializer(serializers.ModelSerializer):
-    posts = posts_serializers.UserPostsSerializer(many=True)
+    posts = UserPostsSerializer(many=True)
     answers = answer_serializer.UserAnswerSerializer(many=True)
 
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ["id", "username", "email",
+                  "first_name", "last_name", "posts", "answers"]
