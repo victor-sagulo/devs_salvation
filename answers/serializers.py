@@ -1,9 +1,6 @@
-from dataclasses import field, fields
 from rest_framework import serializers
 from answers.models import Answer
 from accounts.models import User
-import posts.serializers as posts_serializers
-import accounts.serializers as account_serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
