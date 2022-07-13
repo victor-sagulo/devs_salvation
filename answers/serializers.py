@@ -1,3 +1,4 @@
+from dataclasses import field, fields
 from rest_framework import serializers
 from answers.models import Answer
 from accounts.models import User
@@ -29,6 +30,12 @@ class AnswersSerializer(serializers.ModelSerializer):
 
 
 class LikeAnswerVote(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Answer
+        fields = "__all__"
+
     def update(self, instance, validated_data):
         instance.likes += 1
 
@@ -37,7 +44,14 @@ class LikeAnswerVote(serializers.ModelSerializer):
 
 
 class DeslikeAnswerVote(serializers.ModelSerializer):
-    def update(self, instance, validated_dataa):
+
+    user = UserSerializer()
+
+    class Meta:
+        model = Answer
+        fields = "__all__"
+
+    def update(self, instance, validated_data):
         instance.deslike += 1
 
         instance.save()
