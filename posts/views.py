@@ -2,9 +2,13 @@ from rest_framework import generics
 from utils.mixins import SerilizerByMethodMixin
 from posts.serializers import GetPostInfoSerializer, UsefullPostVoteSerializer, PostSerializer
 from posts.models import Post
+from posts.permissions import AuthenticatedUser, PostOwnerOrAdmPermission
 
 
 class ListCreatePostView(generics.ListCreateAPIView):
+
+    permission_classes = [AuthenticatedUser]
+
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
@@ -13,11 +17,16 @@ class ListCreatePostView(generics.ListCreateAPIView):
 
 
 class UpdateUsefullPostView(generics.UpdateAPIView):
+
+    permission_classes = [AuthenticatedUser]
+
     queryset = Post.objects.all()
     serializer_class = UsefullPostVoteSerializer
 
 
 class PostRetrieveUpdateDestroyView(SerilizerByMethodMixin, generics.RetrieveUpdateDestroyAPIView):
+
+    permission_classes = [PostOwnerOrAdmPermission]
 
     queryset = Post.objects.all()
     serializer_map = {
