@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from accounts.models import User
-from posts.serializers import UserPostsSerializer
-from answers.serializers import UserAnswerSerializer
+import posts.serializers as posts_serializers
+import answers.serializers as answer_serializer
 
 
 class AccountsSerializer(serializers.ModelSerializer):
@@ -29,8 +29,8 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class GetAccountProfileSerializer(serializers.ModelSerializer):
-    posts = UserPostsSerializer(many=True)
-    answers = UserAnswerSerializer(many=True)
+    posts = posts_serializers.UserPostsSerializer(many=True)
+    answers = answer_serializer.UserAnswerSerializer(many=True)
 
     class Meta:
         model = User
