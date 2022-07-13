@@ -2,12 +2,12 @@ from rest_framework import serializers
 from posts.models import Post
 from tags.models import Tag
 from tags.serializers import TagSerializer
-from accounts.serializers import AccountsSerializer
-from answers.serializers import AnswersSerializer
+import accounts.serializers as accounts_serializers
+import answers.serializers as answers_serializers
 
 
 class PostSerializer(serializers.ModelSerializer):
-    user = AccountsSerializer()
+    user = accounts_serializers.AccountsSerializer()
     tags_count = serializers.SerializerMethodField()
     tags = TagSerializer(many=True)
 
@@ -68,8 +68,9 @@ class UsefullPostVoteSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UserPostsSerializer(serializers.ModelSerializer):
-    answers = AnswersSerializer(many=True)
+class GetPostInfoSerializer(serializers.ModelSerializer):
+    user = accounts_serializers.AccountsSerializer()
+    answers = answers_serializers.AnswersSerializer(many=True)
     tags = TagSerializer(many=True)
 
     class Meta:
@@ -77,9 +78,8 @@ class UserPostsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class GetPostInfoSerializer(serializers.ModelSerializer):
-    user = AccountsSerializer()
-    answers = AnswersSerializer(many=True)
+class UserPostsSerializer(serializers.ModelSerializer):
+    answers = answers_serializers.AnswersSerializer(many=True)
     tags = TagSerializer(many=True)
 
     class Meta:

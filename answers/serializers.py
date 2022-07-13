@@ -1,12 +1,11 @@
-from msilib.schema import SelfReg
 from rest_framework import serializers
 from answers.models import Answer
-from posts.serializers import PostSerializer
-from accounts.serializers import AccountsSerializer
+import posts.serializers as posts_serializers
+import accounts.serializers as account_serializers
 
 
 class AnswersSerializer(serializers.ModelSerializer):
-    user = AccountsSerializer()
+    user = account_serializers.AccountsSerializer()
 
     class Meta:
         model = Answer
@@ -37,7 +36,7 @@ class DeslikeAnswerVote(serializers.ModelSerializer):
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
-    post = PostSerializer()
+    post = posts_serializers.PostSerializer()
 
     class Meta:
         model = Answer
