@@ -1,11 +1,20 @@
 from rest_framework import serializers
 from answers.models import Answer
+from accounts.models import User
 import posts.serializers as posts_serializers
 import accounts.serializers as account_serializers
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
+        read_only_fields = ["id"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+
 class AnswersSerializer(serializers.ModelSerializer):
-    user = account_serializers.AccountsSerializer()
+    user = UserSerializer()
 
     class Meta:
         model = Answer
@@ -36,7 +45,6 @@ class DeslikeAnswerVote(serializers.ModelSerializer):
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
-    post = posts_serializers.PostSerializer()
 
     class Meta:
         model = Answer
@@ -47,6 +55,5 @@ class UserAnswerSerializer(serializers.ModelSerializer):
             "content",
             "likes",
             "deslikes",
-            "post",
+            "post_id",
         ]
-        read_only_fields = ["id", "post"]
