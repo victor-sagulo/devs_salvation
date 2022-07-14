@@ -23,6 +23,9 @@ class UpdateUsefullPostView(generics.UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = UsefullPostVoteSerializer
 
+    def perform_update(self, serializer):
+        serializer.save(data=self.request.user)
+
 
 class PostRetrieveUpdateDestroyView(SerilizerByMethodMixin, generics.RetrieveUpdateDestroyAPIView):
 

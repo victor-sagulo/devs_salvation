@@ -10,6 +10,7 @@ class PostSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer(read_only=True)
     tags_count = serializers.SerializerMethodField()
     tags = TagSerializer(many=True)
+    usefull_post_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -55,27 +56,43 @@ class PostSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def get_usefull_post_count(self, instance):
+        return len(instance.usefull_post.all())
+
 
 class UsefullPostVoteSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer()
+    tags = TagSerializer(many=True)
+    usefull_post_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = "__all__"
-        depth = 1
 
     def update(self, instance, validated_data):
-        instance.usefull_post += 1
+        id = validated_data.get("data")
+
+        if(id in instance.usefull_post.all()):
+            instance.usefull_post.remove(id)
+        else:
+            instance.usefull_post.add(id)
 
         instance.save()
         return instance
+
+    def get_usefull_post_count(self, instance):
+        return len(instance.usefull_post.all())
 
 
 class GetPostInfoSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer()
     answers = answers_serializers.AnswersSerializer(many=True)
     tags = TagSerializer(many=True)
+    usefull_post_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = "__all__"
+
+    def get_usefull_post_count(self, instance):
+        return len(instance.usefull_post.all())
