@@ -70,12 +70,12 @@ class UsefullPostVoteSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def update(self, instance, validated_data):
-        id = validated_data.get("data")
+        user = validated_data.get("data")
 
-        if(id in instance.usefull_post.all()):
-            instance.usefull_post.remove(id)
+        if(user in instance.usefull_post.all()):
+            instance.usefull_post.remove(user)
         else:
-            instance.usefull_post.add(id)
+            instance.usefull_post.add(user)
 
         instance.save()
         return instance

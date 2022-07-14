@@ -17,7 +17,7 @@ class AnswersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
         fields = ["id", "created_at", "updated_at",
-                  "content", "likes", "deslikes", "user", "post_id"]
+                  "content", "likes", "dislikes", "user", "post_id"]
         read_only_fields = ["id", "user", "post_id"]
 
     def create(self, validated_data):
@@ -34,13 +34,18 @@ class LikeAnswerVote(serializers.ModelSerializer):
         fields = "__all__"
 
     def update(self, instance, validated_data):
-        instance.likes += 1
+        user = validated_data.get("data")
+
+        if(user in instance.likes.all()):
+            instance.likes.remove(user)
+        else:
+            instance.likes.add(user)
 
         instance.save()
         return instance
 
 
-class DeslikeAnswerVote(serializers.ModelSerializer):
+class DislikeAnswerVote(serializers.ModelSerializer):
 
     user = UserSerializer()
 
@@ -49,7 +54,12 @@ class DeslikeAnswerVote(serializers.ModelSerializer):
         fields = "__all__"
 
     def update(self, instance, validated_data):
-        instance.deslike += 1
+        user = validated_data.get("data")
+
+        if(user in instance.dislikes.all()):
+            instance.dislikes.remove(user)
+        else:
+            instance.dislikes.add(user)
 
         instance.save()
         return instance
@@ -65,6 +75,6 @@ class UserAnswerSerializer(serializers.ModelSerializer):
             "updated_at",
             "content",
             "likes",
-            "deslikes",
+            "dislikes",
             "post_id",
         ]
