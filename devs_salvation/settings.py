@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "answers",
     "posts",
     "tags",
+    "drf_spectacular"
 ]
 
 REST_FRAMEWORK = {
@@ -159,3 +160,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': "drf_spectacular.openapi.AutoSchema"
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Devs Salvation", "Description": "Plataforma para auxiliar desenvolvedores no dia a dia", "VERSION": "1.0", "SERVE_INCLUDE_SCHEMA": False,
+}
