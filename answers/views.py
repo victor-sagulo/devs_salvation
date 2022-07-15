@@ -31,7 +31,7 @@ class AnswersUpdateDislikeView(generics.UpdateAPIView):
         serializer.save(data=self.request.user)
 
 
-class AnswerView(generics.RetrieveDestroyAPIView):
+class AnswerView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AnswerOwnerOrAdmPermission]
 
