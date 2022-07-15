@@ -15,6 +15,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = "__all__"
+        extra_kwargs = {"usefull_post": {"required": False}}
 
     def get_tags_count(self, post: Post):
         return len(post.tags.all())
