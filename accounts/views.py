@@ -48,7 +48,7 @@ class LoginView(APIView):
 class RetrieveUpdateDestroyView(
     SerilizerByMethodMixin, generics.RetrieveUpdateDestroyAPIView
 ):
-
+    authentication_classes = [TokenAuthentication]
     permission_classes = [UserProfileManageAuthentication]
 
     queryset = User.objects.all()

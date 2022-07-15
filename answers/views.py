@@ -4,11 +4,13 @@ from rest_framework.permissions import IsAuthenticated
 from answers.models import Answer
 from answers.permissions import AnswerOwnerOrAdmPermission
 from answers.serializers import AnswersSerializer, DislikeAnswerVote, LikeAnswerVote
+from rest_framework.authentication import TokenAuthentication
 
 # Create your views here.
 
 
 class AnswersUpdateLikeView(generics.UpdateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = Answer.objects.all()
@@ -19,6 +21,7 @@ class AnswersUpdateLikeView(generics.UpdateAPIView):
 
 
 class AnswersUpdateDislikeView(generics.UpdateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = Answer.objects.all()
@@ -29,6 +32,7 @@ class AnswersUpdateDislikeView(generics.UpdateAPIView):
 
 
 class AnswerView(generics.RetrieveDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [AnswerOwnerOrAdmPermission]
 
     queryset = Answer.objects.all()
