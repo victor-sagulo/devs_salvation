@@ -6,11 +6,19 @@ import accounts.serializers as accounts_serializers
 import answers.serializers as answers_serializers
 
 
+class NewUserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    username = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+
+
 class PostSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer(read_only=True)
     tags_count = serializers.SerializerMethodField()
     tags = TagSerializer(many=True)
-    usefull_post = serializers.SerializerMethodField()
+    usefull_post_count = serializers.SerializerMethodField()
+    usefull_post = NewUserSerializer(many=True, write_only=True)
 
     class Meta:
         model = Post
@@ -19,7 +27,7 @@ class PostSerializer(serializers.ModelSerializer):
     def get_tags_count(self, post: Post):
         return len(post.tags.all())
 
-    def get_usefull_post(self, post: Post):
+    def get_usefull_post_count(self, post: Post):
         return len(post.usefull_post.all())
 
     def create(self, validated_data):
@@ -56,7 +64,7 @@ class PostSerializer(serializers.ModelSerializer):
 
         for key, value in validated_data.items():
             if key in non_editable_key:
-                return serializers.ValidationError(
+                raise serializers.ValidationError(
                     {"usefull_post": "You cannot update usefull_post key"})
             setattr(instance, key, value)
 
