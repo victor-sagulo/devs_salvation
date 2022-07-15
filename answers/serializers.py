@@ -11,21 +11,30 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 
+class NewUserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    username = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+
+
 class AnswersSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    likes = serializers.SerializerMethodField()
-    dislikes = serializers.SerializerMethodField()
+    likes = NewUserSerializer(many=True, write_only=True)
+    dislikes = NewUserSerializer(many=True, write_only=True)
+    likes_count = serializers.SerializerMethodField()
+    dislikes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
         fields = ["id", "created_at", "updated_at",
-                  "content", "likes", "dislikes", "user", "post_id"]
+                  "content", "likes", "dislikes", "likes_count", "dislikes_count", "user", "post_id"]
         read_only_fields = ["id", "post_id"]
 
-    def get_likes(self, answer: Answer):
+    def get_likes_count(self, answer: Answer):
         return len(answer.likes.all())
 
-    def get_dislikes(self, answer: Answer):
+    def get_dislikes_count(self, answer: Answer):
         return len(answer.dislikes.all())
 
     def create(self, validated_data):
@@ -33,12 +42,16 @@ class AnswersSerializer(serializers.ModelSerializer):
         answers = Answer.objects.create(**validated_data)
         return answers
 
+    def validate(self, attrs):
+        print(attrs)
+        return super().validate(attrs)
+
     def update(self, instance, validated_data):
         non_editable_key = ["likes", "dislikes"]
-
+        print(validated_data)
         for key, value in validated_data.items():
             if key in non_editable_key:
-                return serializers.ValidationError(
+                raise serializers.ValidationError(
                     {f'{key}': f"You cannot update {key} key"})
             setattr(instance, key, value)
 
