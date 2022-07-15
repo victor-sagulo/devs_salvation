@@ -30,12 +30,16 @@ class LoginSerializer(serializers.Serializer):
 
 class UserPostsSerializer(serializers.ModelSerializer):
     answers_count = serializers.SerializerMethodField()
+    usefull_post = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ["id", "content", "tags", "answers_count", "usefull_post",
                   "created_at", "updated_at"]
         depth = 1
+
+    def get_usefull_post(self, post: Post):
+        return len(post.usefull_post.all())
 
     def get_answers_count(self, post: Post):
         return len(post.answers.all())
