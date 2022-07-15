@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from accounts.models import User
 from posts.models import Post
-# from posts.serializers import UserPostsSerializer
 import answers.serializers as answer_serializer
 
 
@@ -31,7 +30,6 @@ class LoginSerializer(serializers.Serializer):
 
 class UserPostsSerializer(serializers.ModelSerializer):
     answers_count = serializers.SerializerMethodField()
-    # tags = TagSerializer(many=True)
 
     class Meta:
         model = Post

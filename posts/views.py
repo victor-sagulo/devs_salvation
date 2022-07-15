@@ -1,4 +1,6 @@
+from urllib import request
 from answers.serializers import AnswersSerializer
+from answers.models import Answer
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -31,6 +33,7 @@ class UpdateUsefullPostView(generics.UpdateAPIView):
     serializer_class = UsefullPostVoteSerializer
 
     def perform_update(self, serializer):
+
         serializer.save(data=self.request.user)
 
 
@@ -46,15 +49,12 @@ class PostRetrieveUpdateDestroyView(SerilizerByMethodMixin, generics.RetrieveUpd
     }
 
 
-class CreateAnswerView(APIView):
+class CreateAnswerView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+    queryset = Answer.objects.all()
+    serializer_class = AnswersSerializer
 
-        serializer = AnswersSerializer(data=request.data)
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save(post=post, user=request.user)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def perform_create(self, serializer):
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        serializer.save(user=self.request.user, post=post)
