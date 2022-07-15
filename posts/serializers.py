@@ -10,15 +10,17 @@ class PostSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer(read_only=True)
     tags_count = serializers.SerializerMethodField()
     tags = TagSerializer(many=True)
-    usefull_post_count = serializers.SerializerMethodField()
+    usefull_post = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = "__all__"
-        extra_kwargs = {"usefull_post": {"required": False}}
 
     def get_tags_count(self, post: Post):
         return len(post.tags.all())
+
+    def get_usefull_post(self, post: Post):
+        return len(post.usefull_post.all())
 
     def create(self, validated_data):
         tags_data = validated_data.get("tags", [])
@@ -54,21 +56,18 @@ class PostSerializer(serializers.ModelSerializer):
 
         for key, value in validated_data.items():
             if key in non_editable_key:
-                raise serializers.ValidationError(
+                return serializers.ValidationError(
                     {"usefull_post": "You cannot update usefull_post key"})
             setattr(instance, key, value)
 
         instance.save()
         return instance
 
-    def get_usefull_post_count(self, instance):
-        return len(instance.usefull_post.all())
-
 
 class UsefullPostVoteSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer()
     tags = TagSerializer(many=True)
-    usefull_post_count = serializers.SerializerMethodField()
+    usefull_post = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -85,7 +84,7 @@ class UsefullPostVoteSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-    def get_usefull_post_count(self, instance):
+    def get_usefull_post(self, instance):
         return len(instance.usefull_post.all())
 
 
@@ -93,11 +92,11 @@ class GetPostInfoSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer()
     answers = answers_serializers.AnswersSerializer(many=True)
     tags = TagSerializer(many=True)
-    usefull_post_count = serializers.SerializerMethodField()
+    usefull_post = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = "__all__"
 
-    def get_usefull_post_count(self, instance):
-        return len(instance.usefull_post.all())
+    def get_usefull_post(self, post: Post):
+        return len(post.usefull_post.all())

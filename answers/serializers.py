@@ -13,12 +13,20 @@ class UserSerializer(serializers.ModelSerializer):
 
 class AnswersSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    likes = serializers.SerializerMethodField()
+    dislikes = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
         fields = ["id", "created_at", "updated_at",
                   "content", "likes", "dislikes", "user", "post_id"]
-        read_only_fields = ["id", "likes", "dislikes", "post_id"]
+        read_only_fields = ["id", "post_id"]
+
+    def get_likes(self, answer: Answer):
+        return len(answer.likes.all())
+
+    def get_dislikes(self, answer: Answer):
+        return len(answer.dislikes.all())
 
     def create(self, validated_data):
 
@@ -30,7 +38,7 @@ class AnswersSerializer(serializers.ModelSerializer):
 
         for key, value in validated_data.items():
             if key in non_editable_key:
-                raise serializers.ValidationError(
+                return serializers.ValidationError(
                     {f'{key}': f"You cannot update {key} key"})
             setattr(instance, key, value)
 
@@ -40,10 +48,18 @@ class AnswersSerializer(serializers.ModelSerializer):
 
 class LikeAnswerVote(serializers.ModelSerializer):
     user = UserSerializer()
+    likes = serializers.SerializerMethodField()
+    dislikes = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
         fields = "__all__"
+
+    def get_likes(self, answer: Answer):
+        return len(answer.likes.all())
+
+    def get_dislikes(self, answer: Answer):
+        return len(answer.dislikes.all())
 
     def update(self, instance, validated_data):
         user = validated_data.get("data")
@@ -60,10 +76,18 @@ class LikeAnswerVote(serializers.ModelSerializer):
 class DislikeAnswerVote(serializers.ModelSerializer):
 
     user = UserSerializer()
+    likes = serializers.SerializerMethodField()
+    dislikes = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
         fields = "__all__"
+
+    def get_likes(self, answer: Answer):
+        return len(answer.likes.all())
+
+    def get_dislikes(self, answer: Answer):
+        return len(answer.dislikes.all())
 
     def update(self, instance, validated_data):
         user = validated_data.get("data")
@@ -78,6 +102,8 @@ class DislikeAnswerVote(serializers.ModelSerializer):
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField()
+    dislikes = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
@@ -90,3 +116,9 @@ class UserAnswerSerializer(serializers.ModelSerializer):
             "dislikes",
             "post_id",
         ]
+
+    def get_likes(self, answer: Answer):
+        return len(answer.likes.all())
+
+    def get_dislikes(self, answer: Answer):
+        return len(answer.dislikes.all())
