@@ -25,6 +25,18 @@ class AnswersSerializer(serializers.ModelSerializer):
         answers = Answer.objects.create(**validated_data)
         return answers
 
+    def update(self, instance, validated_data):
+        non_editable_key = ["likes", "dislikes"]
+
+        for key, value in validated_data.items():
+            if key in non_editable_key:
+                raise serializers.ValidationError(
+                    {f'{key}': f"You cannot update {key} key"})
+            setattr(instance, key, value)
+
+        instance.save()
+        return instance
+
 
 class LikeAnswerVote(serializers.ModelSerializer):
     user = UserSerializer()
