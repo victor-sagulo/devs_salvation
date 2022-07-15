@@ -6,19 +6,19 @@ from accounts.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ["id", "email", "username", "first_name", "last_name"]
         read_only_fields = ["id"]
         extra_kwargs = {"password": {"write_only": True}}
 
 
 class AnswersSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Answer
         fields = ["id", "created_at", "updated_at",
                   "content", "likes", "dislikes", "user", "post_id"]
-        read_only_fields = ["id", "user", "post_id"]
+        read_only_fields = ["id", "likes", "dislikes", "post_id"]
 
     def create(self, validated_data):
 

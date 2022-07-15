@@ -4,6 +4,7 @@ from rest_framework import permissions
 class UsersListManageAuthentication(permissions.BasePermission):
 
     def has_permission(self, request, view):
+        print(request.user)
         if request.user.is_authenticated or request.method == "POST":
             return True
 
