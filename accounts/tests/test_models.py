@@ -32,7 +32,7 @@ class UserModelTest(TestCase):
 
             email_2.save()
 
-    def test_first_nam(self):
+    def test_first_name(self):
         user_1 = User.objects.get(id=1)
         max_length = user_1._meta.get_field("first_name").max_length
         self.assertEquals(max_length, 125)
