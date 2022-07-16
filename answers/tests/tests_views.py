@@ -3,6 +3,7 @@ from accounts.models import User
 from answers.models import Answer
 from posts.models import Post
 from rest_framework.authtoken.models import Token
+from datetime import datetime
 
 
 class AnswersViewsTest(APITestCase):
@@ -20,6 +21,7 @@ class AnswersViewsTest(APITestCase):
             )
             for user_id in range(0, 2)
         ]
+
         cls.adm = User.objects.create_superuser(
             username="admUser",
             first_name=cls.first_name,
@@ -28,7 +30,8 @@ class AnswersViewsTest(APITestCase):
             password="1234",
         )
         cls.post = [
-            Post.objects.create(content=f"Teste{answers_id}", user=cls.users[0])
+            Post.objects.create(
+                content=f"Teste{answers_id}", user=cls.users[0])
             for answers_id in range(1, 2)
         ]
 
@@ -59,3 +62,25 @@ class AnswersViewsTest(APITestCase):
             response.data["detail"],
             "You do not have permission to perform this action.",
         )
+
+    def test_if_an_user_can_publish_an_answer(self):
+        token = Token.objects.create(user=self.users[1])
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+
+        response = self.client.post(
+            f'/api/posts/{self.post[0].id}/answers/',
+            {'content': "Eu possuo a solução pra esse problema"},
+            format='json'
+        )
+        formated_user = self.users[1].__dict__
+        new_user = {
+            "id": formated_user['id'],
+            "username": formated_user['username'],
+            "email": formated_user['email'],
+            "first_name": formated_user['first_name'],
+            "last_name": formated_user['last_name']
+
+        }
+
+        self.assertEquals(response.status_code, 201)
+        self.assertEquals(response.data["user"], new_user)

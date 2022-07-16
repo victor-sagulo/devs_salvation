@@ -20,8 +20,8 @@ class NewUserSerializer(serializers.Serializer):
 
 class AnswersSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    likes = NewUserSerializer(many=True, write_only=True)
-    dislikes = NewUserSerializer(many=True, write_only=True)
+    likes = NewUserSerializer(many=True, write_only=True, required=False)
+    dislikes = NewUserSerializer(many=True, write_only=True, required=False)
     likes_count = serializers.SerializerMethodField()
     dislikes_count = serializers.SerializerMethodField()
 
@@ -43,12 +43,10 @@ class AnswersSerializer(serializers.ModelSerializer):
         return answers
 
     def validate(self, attrs):
-        print(attrs)
         return super().validate(attrs)
 
     def update(self, instance, validated_data):
         non_editable_key = ["likes", "dislikes"]
-        print(validated_data)
         for key, value in validated_data.items():
             if key in non_editable_key:
                 raise serializers.ValidationError(
