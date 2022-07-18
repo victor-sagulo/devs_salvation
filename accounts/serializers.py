@@ -10,7 +10,10 @@ class AccountsSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email",
                   "first_name", "last_name", "password"]
         read_only_fields = ["id"]
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {"password": {"write_only": True},
+                        "ranking_points": {"required": False},
+                        "ranking": {"required": False}
+                        }
 
     def validated_email(self, value):
         user_email = User.objects.filter(email__ixact=value).exists()

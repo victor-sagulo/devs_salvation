@@ -6,7 +6,8 @@ from accounts.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "email", "username", "first_name", "last_name"]
+        fields = ["id", "email", "username", "first_name",
+                  "last_name"]
         read_only_fields = ["id"]
         extra_kwargs = {"password": {"write_only": True}}
 
