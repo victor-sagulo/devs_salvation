@@ -7,13 +7,9 @@ import answers.serializers as answer_serializer
 class AccountsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email",
-                  "first_name", "last_name", "password"]
+        fields = ["id", "username", "email", "first_name", "last_name", "password"]
         read_only_fields = ["id"]
-        extra_kwargs = {"password": {"write_only": True},
-                        "ranking_points": {"required": False},
-                        "ranking": {"required": False}
-                        }
+        extra_kwargs = {"password": {"write_only": True}}
 
     def validated_email(self, value):
         user_email = User.objects.filter(email__ixact=value).exists()
@@ -37,8 +33,15 @@ class UserPostsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ["id", "content", "tags", "answers_count", "usefull_post",
-                  "created_at", "updated_at"]
+        fields = [
+            "id",
+            "content",
+            "tags",
+            "answers_count",
+            "usefull_post",
+            "created_at",
+            "updated_at",
+        ]
         depth = 1
 
     def get_usefull_post(self, post: Post):
@@ -54,5 +57,12 @@ class GetAccountProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "username", "email",
-                  "first_name", "last_name", "posts", "answers"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "posts",
+            "answers",
+        ]
