@@ -18,7 +18,8 @@ class PostSerializer(serializers.ModelSerializer):
     tags_count = serializers.SerializerMethodField()
     tags = TagSerializer(many=True)
     usefull_post_count = serializers.SerializerMethodField()
-    usefull_post = NewUserSerializer(many=True, write_only=True)
+    usefull_post = NewUserSerializer(
+        many=True, write_only=True, required=False)
 
     class Meta:
         model = Post
