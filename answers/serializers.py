@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from answers.models import Answer
 from accounts.models import User
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -39,9 +41,16 @@ class AnswersSerializer(serializers.ModelSerializer):
         return len(answer.dislikes.all())
 
     def create(self, validated_data):
-        post = validated_data.pop("posts")
-        print(post)
-        answers = Answer.objects.create(**validated_data)
+        post = validated_data.pop("post")
+        print(post.user)
+        send_mail(
+            subject='Um post seu foi respondido!',
+            message=f"Seu post com o título '{post.title}' possui uma nova resposta!",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[post.user],
+            fail_silently=False
+        )
+        answers = Answer.objects.create(**validated_data, post=post)
         return answers
 
     def validate(self, attrs):
