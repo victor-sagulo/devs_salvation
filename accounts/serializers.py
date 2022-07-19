@@ -36,7 +36,7 @@ class UserPostsSerializer(serializers.ModelSerializer):
         model = Post
         fields = [
             "id",
-            "title"
+            "title",
             "content",
             "tags",
             "answers_count",
