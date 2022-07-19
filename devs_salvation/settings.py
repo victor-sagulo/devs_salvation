@@ -17,8 +17,6 @@ import dj_database_url
 import environ
 
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -67,6 +65,10 @@ INSTALLED_APPS = [
     "tags",
     "drf_spectacular",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 
 
 MIDDLEWARE = [
@@ -166,7 +168,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 env = environ.Env(
-    DEBUG = (bool, False)
+    DEBUG=(bool, False)
 )
 
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
