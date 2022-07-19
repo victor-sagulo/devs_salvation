@@ -3,13 +3,21 @@ from utils.mixins import SerilizerByMethodMixin
 from rest_framework.views import APIView, Response, status
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import authenticate
-from accounts.permissions import UserProfileManageAuthentication, UsersListManageAuthentication
-from accounts.serializers import GetAccountProfileSerializer, LoginSerializer, AccountsSerializer
+from accounts.permissions import (
+    UserProfileManageAuthentication,
+    UsersListManageAuthentication,
+)
+from accounts.serializers import (
+    GetAccountProfileSerializer,
+    LoginSerializer,
+    AccountsSerializer,
+)
 from accounts.models import User
+from rest_framework.authentication import TokenAuthentication
 
 
 class ListCreateUserView(generics.ListCreateAPIView):
-
+    authentication_classes = [TokenAuthentication]
     permission_classes = [UsersListManageAuthentication]
 
     queryset = User.objects.all()
@@ -23,7 +31,7 @@ class LoginView(APIView):
 
         user = authenticate(
             email=serializer.validated_data["email"],
-            password=serializer.validated_data["password"]
+            password=serializer.validated_data["password"],
         )
 
         if user:
@@ -37,8 +45,10 @@ class LoginView(APIView):
         )
 
 
-class RetrieveUpdateDestroyView(SerilizerByMethodMixin, generics.RetrieveUpdateDestroyAPIView):
-
+class RetrieveUpdateDestroyView(
+    SerilizerByMethodMixin, generics.RetrieveUpdateDestroyAPIView
+):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [UserProfileManageAuthentication]
 
     queryset = User.objects.all()

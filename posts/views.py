@@ -10,12 +10,16 @@ from utils.mixins import SerilizerByMethodMixin
 
 from posts.models import Post
 from posts.permissions import AuthenticatedUser, PostOwnerOrAdmPermission
-from posts.serializers import (GetPostInfoSerializer, PostSerializer,
-                               UsefullPostVoteSerializer)
+from posts.serializers import (
+    GetPostInfoSerializer,
+    PostSerializer,
+    UsefullPostVoteSerializer,
+)
+from rest_framework.authentication import TokenAuthentication
 
 
 class ListCreatePostView(generics.ListCreateAPIView):
-
+    authentication_classes = [TokenAuthentication]
     permission_classes = [AuthenticatedUser]
 
     queryset = Post.objects.all()
@@ -26,7 +30,7 @@ class ListCreatePostView(generics.ListCreateAPIView):
 
 
 class UpdateUsefullPostView(generics.UpdateAPIView):
-
+    authentication_classes = [TokenAuthentication]
     permission_classes = [AuthenticatedUser]
 
     queryset = Post.objects.all()
@@ -37,8 +41,10 @@ class UpdateUsefullPostView(generics.UpdateAPIView):
         serializer.save(data=self.request.user)
 
 
-class PostRetrieveUpdateDestroyView(SerilizerByMethodMixin, generics.RetrieveUpdateDestroyAPIView):
-
+class PostRetrieveUpdateDestroyView(
+    SerilizerByMethodMixin, generics.RetrieveUpdateDestroyAPIView
+):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [PostOwnerOrAdmPermission]
 
     queryset = Post.objects.all()
@@ -50,11 +56,12 @@ class PostRetrieveUpdateDestroyView(SerilizerByMethodMixin, generics.RetrieveUpd
 
 
 class CreateAnswerView(generics.CreateAPIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = Answer.objects.all()
     serializer_class = AnswersSerializer
 
     def perform_create(self, serializer):
-        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        post = get_object_or_404(Post, pk=self.kwargs["pk"])
         serializer.save(user=self.request.user, post=post)
