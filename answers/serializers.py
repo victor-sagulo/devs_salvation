@@ -39,7 +39,8 @@ class AnswersSerializer(serializers.ModelSerializer):
         return len(answer.dislikes.all())
 
     def create(self, validated_data):
-
+        post = validated_data.pop("posts")
+        print(post)
         answers = Answer.objects.create(**validated_data)
         return answers
 
