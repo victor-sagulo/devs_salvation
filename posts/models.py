@@ -6,6 +6,7 @@ class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    title = models.CharField(max_length=128)
     content = models.TextField()
     usefull_post = models.ManyToManyField(
         "accounts.User", related_name="usefull_posts")

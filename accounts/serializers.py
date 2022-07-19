@@ -7,7 +7,8 @@ import answers.serializers as answer_serializer
 class AccountsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name", "password"]
+        fields = ["id", "username", "email",
+                  "first_name", "last_name", "password"]
         read_only_fields = ["id"]
         extra_kwargs = {"password": {"write_only": True}}
 
@@ -35,6 +36,7 @@ class UserPostsSerializer(serializers.ModelSerializer):
         model = Post
         fields = [
             "id",
+            "title"
             "content",
             "tags",
             "answers_count",
