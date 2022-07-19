@@ -21,7 +21,8 @@ class AnswersSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "likes", "dislikes", "post_id"]
 
     def create(self, validated_data):
-
+        post = validated_data.pop("posts")
+        print(post)
         answers = Answer.objects.create(**validated_data)
         return answers
 

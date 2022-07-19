@@ -5,7 +5,6 @@ from tags.serializers import TagSerializer
 import accounts.serializers as accounts_serializers
 import answers.serializers as answers_serializers
 
-
 class PostSerializer(serializers.ModelSerializer):
     user = accounts_serializers.AccountsSerializer(read_only=True)
     tags_count = serializers.SerializerMethodField()
@@ -39,7 +38,6 @@ class PostSerializer(serializers.ModelSerializer):
         return post
 
     def update(self, instance, validated_data):
-        non_editable_key = ["usefull_post"]
 
         tags_to_update = validated_data.pop('tags', [])
 
@@ -53,9 +51,6 @@ class PostSerializer(serializers.ModelSerializer):
                 instance.tags.add(new_tag)
 
         for key, value in validated_data.items():
-            if key in non_editable_key:
-                raise serializers.ValidationError(
-                    {"usefull_post": "You cannot update usefull_post key"})
             setattr(instance, key, value)
 
         instance.save()
